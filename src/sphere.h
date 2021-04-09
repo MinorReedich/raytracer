@@ -20,7 +20,7 @@ public:
 };
 
 bool sphere::hit(const ray& r, hit_record& rec) const {
-   glm::vec3 oc = r.origin() - center;
+   /*glm::vec3 oc = r.origin() - center; 
    float a = glm::dot(r.direction(), r.direction());
    float half_b = glm::dot(oc, r.direction());
    float c = glm::length2(oc) - radius*radius;
@@ -31,11 +31,26 @@ bool sphere::hit(const ray& r, hit_record& rec) const {
 
    float t = (-half_b - sqrtd) / a;
    if (t < 0) t = (-half_b + sqrtd) / a;
-   if (t < 0) return false;
+   if (t < 0) return false;*/
+   
+   //INTERSECTION ALGORITHM
+   float t;
+   glm::vec3 el = center - r.origin();
+   float len = length(r.direction());
+   glm::vec3 d = r.direction()/len;
+   float s = glm::dot(el,d);
+   float elSqr = glm::dot(el,el);
+   float rSqr = radius*radius;
+   if (s < 0 && elSqr > rSqr) return false;
+   float mSqr = elSqr - s*s;
+   if (mSqr > rSqr) return false;
+   float q = sqrt(rSqr - mSqr);
+   if (elSqr > rSqr) t = s - q;
+   else t = s + q;
 
    // save relevant data in hit record
-   rec.t = t; // save the time when we hit the object
-   rec.p = r.at(t); // ray.origin + t * ray.direction
+   rec.t = t/len; // save the time when we hit the object
+   rec.p = r.at(t/len); // ray.origin + t * ray.direction
    rec.mat_ptr = mat_ptr; 
 
    // save normal
