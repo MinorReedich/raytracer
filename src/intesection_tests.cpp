@@ -49,6 +49,32 @@ void test_sphere(const sphere& s, const ray& r, bool hits, const hit_record& des
    }
 }
 
+void test_box(const box& b, const ray& r, bool hits, const hit_record& desired) {
+   hit_record hit;
+   bool result = b.hit(r, hit);
+
+   check(result == hits, "error: ray should hit", hit, r);
+   if (hits) {
+      check(vecEquals(hit.p, desired.p), "error: position incorrect:", hit, r);
+      check(vecEquals(hit.normal, desired.normal), "error: normal incorrect:", hit, r);
+      check(equals(hit.t, desired.t), "error: hit time incorrect", hit, r);
+      check(hit.front_face == desired.front_face, "error: front facing incorrect", hit, r);
+   }
+}
+
+void test_plane(const plane& p, const ray& r, bool hits, const hit_record& desired) {
+   hit_record hit;
+   bool result = p.hit(r, hit);
+
+   check(result == hits, "error: ray should hit", hit, r);
+   if (hits) {
+      check(vecEquals(hit.p, desired.p), "error: position incorrect:", hit, r);
+      check(vecEquals(hit.normal, desired.normal), "error: normal incorrect:", hit, r);
+      check(equals(hit.t, desired.t), "error: hit time incorrect", hit, r);
+      check(hit.front_face == desired.front_face, "error: front facing incorrect", hit, r);
+   }
+}
+
 int main(int argc, char** argv)
 {
    shared_ptr<material> empty = 0; 
@@ -80,5 +106,46 @@ int main(int argc, char** argv)
                true, 
                hit_record{vec3(0,0.3432f, 1.9703f), vec3(0,0.1716f, 0.9851f), 0.3432f, true, empty}); 
 
-   // TODO: Your tests here
+
+   box b(point3(0), vec3(1,0,0), vec3(0,1,0), vec3(0,0,1), vec3(1/2,0,0), vec3(0,1/2,0), vec3(0,0,1/2), empty);
+   test_box(b,
+               ray(point3(0,0,0), vec3(1,0,0)), // ray inside box
+               true,
+               hit_record{vec3(0,0,0), vec3(-1,0,0), 0, false, empty});
+
+   test_box(b,
+               ray(point3(-2,0,0), vec3(1,0,0)), // ray outside/towards box (hit)
+               true,
+               hit_record{vec3(1/2,0,0), vec3(-1,0,0), 2, false, empty});
+   
+   test_box(b,
+               ray(point3(-2,-8,0), vec3(1,0,0)), // ray outside (miss)
+               false,
+               none);
+   
+   test_box(b,
+               ray(point3(-2,-8,0), vec3(-1,0,0)), // ray outside/away box
+               false,
+               none);
+
+   plane p(point3(0), vec3(0,0,1), empty);
+   test_plane(p,
+               ray(point3(0,0,0), vec3(1,0,0)), // ray on plane 
+               false,
+               none);
+
+   test_plane(p,
+               ray(point3(0,0,-1), vec3(0,0,1)), // ray off/towards plane (hits)
+               true,
+               hit_record{vec3(0,0,0), vec3(0,0,-1), 1, false, empty});
+
+   test_plane(p,
+               ray(point3(0,0,1), vec3(0,0,1)), // ray off/away plane
+               false,
+               none);
+
+   test_plane(p,
+               ray(point3(0,0,1), vec3(0,1,0)),
+               false,
+               none);
 }
