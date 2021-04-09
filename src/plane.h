@@ -12,8 +12,20 @@ public:
 
    virtual bool hit(const ray& r, hit_record& rec) const override
    {
-      // todo
-      return false;
+      float denom = glm::dot(normalize(r.direction()), n);
+      if(denom!=0){
+         float t = glm::dot(a-r.origin(), n)/denom;
+         if(t<0) return false;
+         // save relevant data in hit record
+         rec.t = t; // save the time when we hit the object
+         rec.p = r.at(t); // ray.origin + t * ray.direction
+         rec.mat_ptr = mat_ptr; 
+         rec.set_face_normal(r, n);
+         return true;
+      }
+      else {
+         return false;
+      }
    }
 
 public:
