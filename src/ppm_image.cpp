@@ -19,7 +19,12 @@ ppm_image::ppm_image(int width, int height) : myWidth(width), myHeight(height)
 
 ppm_image::ppm_image(const ppm_image& orig)
 {
-    cout << "not implemented\n";
+    myHeight = orig.myHeight;
+    myWidth = orig.myWidth;
+    myData = new ppm_pixel[myWidth*myHeight];
+    for(int i = 0; i<myWidth*myHeight; i++){
+        myData[i] = orig.myData[i];
+    }
 }
 
 ppm_image& ppm_image::operator=(const ppm_image& orig)
@@ -28,8 +33,12 @@ ppm_image& ppm_image::operator=(const ppm_image& orig)
     {
         return *this;
     }
-
-    cout << "not implemented\n";
+    myHeight = orig.myHeight;
+    myWidth = orig.myWidth;
+    myData = new ppm_pixel[myWidth*myHeight];
+    for(int i = 0; i<myWidth*myHeight; i++){
+        myData[i] = orig.myData[i];
+    }
     return *this;
 }
 
@@ -78,4 +87,23 @@ void ppm_image::set_vec3(int i, int j, const vec3 & c)
    myData[idx].r = (unsigned char) (c[0] * 255.999);
    myData[idx].g = (unsigned char) (c[1] * 255.999);
    myData[idx].b = (unsigned char) (c[2] * 255.999);
+}
+
+void ppm_image::weird_blur(){
+    ppm_pixel* newData = new ppm_pixel[myHeight*myWidth];
+    for(int i = 0; i<myWidth*myHeight; i++){
+        newData[i] = myData[i];
+    }
+    for(int i = 4; i<myWidth*myHeight-4; i++){
+        myData[i].r = newData[i-4].r + newData[i-3].r + newData[i-2].r +
+            newData[i-1].r + newData[i].r + newData[i+1].r + newData[i+2].r +
+            newData[i+3].r + newData[i+4].r;
+        myData[i].g = newData[i-4].g + newData[i-3].g + newData[i-2].g +
+            newData[i-1].g + newData[i].g + newData[i+1].g + newData[i+2].g +
+            newData[i+3].g + newData[i+4].g;
+        myData[i].b = newData[i-4].b + newData[i-3].b + newData[i-2].b +
+            newData[i-1].b + newData[i].b + newData[i+1].b + newData[i+2].b +
+            newData[i+3].b + newData[i+4].b;
+    }
+    delete[] newData;
 }
