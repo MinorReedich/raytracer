@@ -103,4 +103,6 @@ void ray_trace(ppm_image& image)
    }
 
    image.save("materials.png");
+   image.weird_blur();
+   image.save("weird_blur.png");
 }
