@@ -51,6 +51,9 @@ namespace agl
         // Get a vec3 color 
         glm::vec3 get_vec3(int row, int col) const;
 
+        // blur the image in a strange way
+        void weird_blur();
+
     private:
         ppm_pixel* myData;
         unsigned int myWidth;
