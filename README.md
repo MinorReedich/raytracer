@@ -41,3 +41,10 @@ raytracer/build $ ../bin/gradient
 raytracer/build $ ../bin/normals
 ```
 
+## Results
+
+As my unique feature, I implemented a blur that takes each pixel's components
+and adds the surrounding 8 pixels' to it. This creates a mirage of sand, which
+I call Oasis: Spheres in the Desert. 
+
+![art not found](spheres_in_the_desert.png)
