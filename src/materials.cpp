@@ -102,7 +102,7 @@ void ray_trace(ppm_image& image)
       }
    }
 
-   image.save("materials.png");
+   image.save("materials.png"); 
    //image.weird_blur();
    //image.save("../spheres_in_the_desert.png");
 }
