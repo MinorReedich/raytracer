@@ -39,7 +39,7 @@ public:
   phong(const glm::vec3& view) :
      diffuseColor(0,0,1), 
      specColor(1,1,1),
-     ambientColor(.01f, .01f, .01f),
+     ambientColor(.1f, .1f, .1f),
      lightPos(5,5,0),
      viewPos(view), 
      kd(0.45), ks(0.45), ka(0.1), shininess(10.0) 
@@ -61,29 +61,25 @@ public:
   virtual bool scatter(const ray& r_in, const hit_record& hit, 
      glm::color& attenuation, ray& scattered) const override 
   {
-     /*glm::vec3 L = lightPos - hit.p;
+     glm::vec3 L = lightPos - hit.p;
      glm::color Ia = ka*ambientColor; 
      glm::color Id = kd*diffuseColor*max(vec3(0,0,0),glm::dot(normalize(L), normalize(hit.normal)));
-     glm::vec3 r = 2*glm::dot(normalize(L), normalize(hit.normal))*hit.normal-L; 
+     glm::vec3 r = 2*glm::dot(normalize(L), normalize(hit.normal))*hit.normal-normalize(L); 
      glm::point3 v = viewPos - hit.p;
      glm::color Is;
      if(glm::dot(normalize(v), r)>0){
-         Is = ks*specColor*pow(glm::dot(normalize(v),r),shininess); 
+         Is = ks*specColor*pow(glm::dot(normalize(v),normalize(r)),shininess); 
      }
-     else Is = ks*specColor*glm::dot(normalize(v),r);
-     glm::color If = Ia + Id + Is; 
+     else Is = glm::vec3(0);
+     glm::color If = Ia + Id + Is;
+     //cout << Ia << endl << Id << endl << Is << endl;
 
      // copied from lambertian scattering
      glm::vec3 scatter_direction = hit.normal + random_unit_vector();
      if (near_zero(scatter_direction)) scatter_direction = hit.normal;
      scattered = ray(hit.p, scatter_direction);
      attenuation = If;
-     return true;*/
      return false;
-     
-     // I followed my intuition and the algorithm you provided to a T, but no luck 
-     // in getting it to render correctly (feel free to check how it works by
-     // uncommenting the above code). Sad face
   }
 
 public:
